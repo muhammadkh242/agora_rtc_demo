@@ -25,6 +25,12 @@ class _VideoScreenState extends State<VideoScreen> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _engine.leaveChannel();
+    super.dispose();
+  }
+
   Future<void> initAgora() async {
     await [Permission.microphone, Permission.camera].request();
 
@@ -36,23 +42,34 @@ class _VideoScreenState extends State<VideoScreen> {
 
     await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
     await _engine.enableVideo();
-
     await _engine.startPreview();
+
     _engine.registerEventHandler(
-      RtcEngineEventHandler(
-        onJoinChannelSuccess: (connection, int elapsed) {
-          print("local user joined");
-          setState(() {
-            _localUserJoined = true;
-          });
-        },
-        onUserJoined: (connection, int uid, int elapsed) {
-          print("remote user $uid joined");
-          setState(() {
-            _remoteUid = uid;
-          });
-        },
-      ),
+      RtcEngineEventHandler(onJoinChannelSuccess: (connection, int elapsed) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("onJoinChannelSuccess ${connection.localUid}")));
+        setState(() {
+          _localUserJoined = true;
+        });
+      }, onUserJoined: (connection, int uid, int elapsed) {
+        print("elapsedonUserJoined : $elapsed");
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("$uid joined")));
+        setState(() {
+          _remoteUid = uid;
+        });
+      }, onUserOffline: (connection, int uid, reasonType) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("$uid left")));
+        print("leave reason${reasonType.name}");
+        setState(() {
+          _remoteUid = null;
+        });
+      }, onConnectionLost: (connection) {
+        connection.localUid;
+      }, onLeaveChannel: (connection, stats) {
+        print("connectionduration : ${stats.duration}");
+      }),
     );
 
     await _engine.joinChannel(
@@ -60,6 +77,7 @@ class _VideoScreenState extends State<VideoScreen> {
         channelId: channelName,
         uid: 0,
         options: const ChannelMediaOptions());
+    _engine.muteLocalAudioStream(true);
   }
 
   // Create UI with local view and remote view
@@ -141,6 +159,8 @@ class _VideoScreenState extends State<VideoScreen> {
   // Display remote user's video
   Widget _remoteVideo() {
     if (_remoteUid != null) {
+      _engine.muteRemoteAudioStream(uid: _remoteUid!, mute: true);
+
       return Stack(children: [
         AgoraVideoView(
             controller: VideoViewController.remote(

@@ -28,7 +28,15 @@ class _HomeScreenState extends State<HomeScreen> {
         title: const Text("Agora Call"),
         centerTitle: true,
       ),
-      body: Padding(
+      body: Center(
+        child: ElevatedButton(
+          child: const Text("Join"),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => const VideoScreen()));
+          },
+        ),
+      ) /*Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -74,7 +82,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-      ),
+      )*/
+      ,
     );
   }
 
