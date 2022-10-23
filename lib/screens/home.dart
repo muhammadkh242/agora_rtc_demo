@@ -83,11 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
       await [Permission.microphone, Permission.camera].request();
 
       await Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => VideoScreen(
-                    role: _role,
-                  )));
+          context, MaterialPageRoute(builder: (context) => VideoScreen()));
     }
   }
 }

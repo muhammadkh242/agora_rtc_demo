@@ -1,4 +1,5 @@
 import 'package:agorastreaming/screens/home.dart';
+import 'package:agorastreaming/screens/video.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(),
+      home: const VideoScreen(),
     );
   }
 }
