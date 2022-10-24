@@ -1,4 +1,4 @@
-# agora call
+# Agora call
 
 simple video call flutter mobile application, using Agora.
 
