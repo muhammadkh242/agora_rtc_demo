@@ -1,8 +1,5 @@
 # agora call
 
-
-## Getting Started
-
 simple video call flutter mobile application, using Agora.
 
 ## Package
