@@ -60,8 +60,6 @@ class _VideoScreenState extends State<VideoScreen> {
         });
       }, onUserOffline:
           (connection, int uid, UserOfflineReasonType reasonType) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("$uid left")));
         print("leave reason${reasonType.name}");
         setState(() {
           _remoteUid = null;
@@ -156,9 +154,7 @@ class _VideoScreenState extends State<VideoScreen> {
             decoration: const BoxDecoration(
                 shape: BoxShape.circle, color: Colors.white),
             padding: const EdgeInsets.all(10),
-            child: Icon(frontCamera
-                ? Icons.camera_enhance_outlined
-                : Icons.camera_enhance),
+            child: const Icon(Icons.cameraswitch),
           ),
           onTap: () {
             setState(() {
@@ -182,6 +178,20 @@ class _VideoScreenState extends State<VideoScreen> {
               remoteMuted = !remoteMuted;
             });
             _engine.muteRemoteAudioStream(uid: _remoteUid!, mute: remoteMuted);
+          },
+        ),
+        const SizedBox(
+          width: 30,
+        ),
+        GestureDetector(
+          child: Container(
+            decoration: const BoxDecoration(
+                shape: BoxShape.circle, color: Colors.white),
+            padding: const EdgeInsets.all(10),
+            child: const Icon(Icons.call_end),
+          ),
+          onTap: () {
+            _engine.leaveChannel();
           },
         ),
       ],
