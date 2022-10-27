@@ -54,7 +54,6 @@ class _VideoScreenState extends State<VideoScreen> {
           });
         },
         onUserJoined: (connection, int uid, int elapsed) {
-
           print("elapsedonUserJoined : $elapsed");
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text("$uid joined")));
@@ -86,7 +85,6 @@ class _VideoScreenState extends State<VideoScreen> {
         channelId: channelName,
         uid: 0,
         options: const ChannelMediaOptions());
-    _engine.muteLocalAudioStream(true);
   }
 
   // Create UI with local view and remote view
@@ -168,14 +166,13 @@ class _VideoScreenState extends State<VideoScreen> {
   // Display remote user's video
   Widget _remoteVideo() {
     if (_remoteUid != null) {
-      _engine.muteRemoteAudioStream(uid: _remoteUid!, mute: true);
-
       return Stack(children: [
         AgoraVideoView(
-            controller: VideoViewController.remote(
-                rtcEngine: _engine,
-                canvas: VideoCanvas(uid: _remoteUid),
-                connection: const RtcConnection(channelId: channelName))),
+          controller: VideoViewController.remote(
+              rtcEngine: _engine,
+              canvas: VideoCanvas(uid: _remoteUid),
+              connection: const RtcConnection(channelId: channelName)),
+        ),
         Align(
           alignment: Alignment.bottomCenter,
           child: Padding(
