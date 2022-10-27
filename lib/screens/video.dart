@@ -58,7 +58,7 @@ class _VideoScreenState extends State<VideoScreen> {
             _remoteUid = uid;
           });
         },
-        onUserOffline: (connection, int uid, reasonType) {
+        onUserOffline: (connection, int uid, UserOfflineReasonType reasonType) {
           ScaffoldMessenger.of(context)
               .showSnackBar(SnackBar(content: Text("$uid left")));
           print("leave reason${reasonType.name}");
@@ -69,7 +69,6 @@ class _VideoScreenState extends State<VideoScreen> {
         },
         onConnectionLost: (connection) {
           print("connection lost");
-          //_engine.leaveChannel();
         },
         onLeaveChannel: (connection, stats) {
           print("connectionduration : ${stats.duration}");
@@ -84,6 +83,9 @@ class _VideoScreenState extends State<VideoScreen> {
           setState(() {
             connectionState = stateType;
           });
+          if (reasonType == ConnectionChangedReasonType.connectionChangedLost) {
+            _engine.leaveChannel();
+          }
         },
       ),
     );
