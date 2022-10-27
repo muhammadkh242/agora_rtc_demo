@@ -1,6 +1,5 @@
 import 'dart:developer';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
-import 'package:agorastreaming/utils/call_state.dart';
 import 'package:agorastreaming/widgets/progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
