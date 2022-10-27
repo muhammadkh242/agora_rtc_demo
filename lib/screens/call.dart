@@ -5,16 +5,16 @@ import 'package:agorastreaming/widgets/duration_dialog.dart';
 import 'package:agorastreaming/widgets/progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
-import '../config/agora_config.dart';
+import '../config/constants.dart';
 
-class VideoScreen extends StatefulWidget {
-  const VideoScreen({Key? key}) : super(key: key);
+class CallScreen extends StatefulWidget {
+  const CallScreen({Key? key}) : super(key: key);
 
   @override
-  State<VideoScreen> createState() => _VideoScreenState();
+  State<CallScreen> createState() => _CallScreenState();
 }
 
-class _VideoScreenState extends State<VideoScreen> {
+class _CallScreenState extends State<CallScreen> {
   int? _remoteUid;
   bool _localUserJoined = false;
   late RtcEngine _engine;

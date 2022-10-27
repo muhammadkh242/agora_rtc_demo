@@ -1,5 +1,5 @@
 import 'package:agorastreaming/screens/home.dart';
-import 'package:agorastreaming/screens/video.dart';
+import 'package:agorastreaming/screens/call.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -19,7 +19,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Agora Call',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.black12,
+        primarySwatch: Colors.teal,
       ),
       home: const HomeScreen(),
     );

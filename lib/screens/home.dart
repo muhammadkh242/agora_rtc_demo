@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
-import 'package:agorastreaming/screens/video.dart';
+import 'package:agorastreaming/screens/call.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -29,12 +29,26 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
       ),
       body: Center(
-        child: ElevatedButton(
-          child: const Text("Join"),
-          onPressed: () {
+        child: GestureDetector(
+          onTap: (){
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => const VideoScreen()));
+                MaterialPageRoute(builder: (context) => const CallScreen()));
           },
+          child: Container(
+            width: 200,
+            height: 50,
+            padding: const EdgeInsets.symmetric(
+              vertical: 12,
+              horizontal: 32,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: const BorderRadius.all(Radius.circular(32)),
+              color: Colors.white.withOpacity(0.3),
+            ),
+            child: const Center(
+              child: Text('Join', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20, color: Colors.white),),
+            ),
+          ),
         ),
       ),
     );
