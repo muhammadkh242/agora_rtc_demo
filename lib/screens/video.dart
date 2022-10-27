@@ -92,6 +92,12 @@ class _VideoScreenState extends State<VideoScreen> {
         print(rxQuality.name);
         if (uid == 0) {
           localQuality = txQuality;
+          if (txQuality == QualityType.qualityPoor ||
+              txQuality == QualityType.qualityBad ||
+              txQuality == QualityType.qualityVbad) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(const SnackBar(content: Text("Poor connection")));
+          }
         } else {
           remoteQuality = txQuality;
         }
