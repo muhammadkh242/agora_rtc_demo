@@ -40,7 +40,7 @@ class _VideoScreenState extends State<VideoScreen> {
       channelProfile: ChannelProfileType.channelProfileCommunication,
     ));
 
-    await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
+    //await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
     await _engine.enableVideo();
     await _engine.startPreview();
 
