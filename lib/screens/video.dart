@@ -1,5 +1,7 @@
 import 'dart:developer';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:agorastreaming/main.dart';
+import 'package:agorastreaming/widgets/duration_dialog.dart';
 import 'package:agorastreaming/widgets/progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -70,6 +72,12 @@ class _VideoScreenState extends State<VideoScreen> {
       }, onLeaveChannel: (connection, stats) {
         print("connectionduration : ${stats.duration}");
         Navigator.of(context).pop();
+
+        showDialog(
+            context: navKey.currentContext!,
+            builder: (context) => DurationDialog(
+                  duration: stats.duration!,
+                ));
       }, onConnectionStateChanged: (RtcConnection connection,
           ConnectionStateType stateType,
           ConnectionChangedReasonType reasonType) {
