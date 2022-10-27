@@ -22,6 +22,9 @@ class _VideoScreenState extends State<VideoScreen> {
   ConnectionStateType connectionState =
       ConnectionStateType.connectionStateConnecting;
 
+  QualityType localQuality = QualityType.qualityDetecting;
+  QualityType remoteQuality = QualityType.qualityDetecting;
+
   @override
   void initState() {
     initAgora();
@@ -44,50 +47,56 @@ class _VideoScreenState extends State<VideoScreen> {
     ));
     await _engine.enableVideo();
     _engine.registerEventHandler(
-      RtcEngineEventHandler(
-        onJoinChannelSuccess: (connection, int elapsed) {
-          setState(() {
-            _localUserJoined = true;
-          });
-        },
-        onUserJoined: (connection, int uid, int elapsed) {
-          print("elapsedonUserJoined : $elapsed");
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Remote user joined the call")));
-          setState(() {
-            _remoteUid = uid;
-          });
-        },
-        onUserOffline: (connection, int uid, UserOfflineReasonType reasonType) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("$uid left")));
-          print("leave reason${reasonType.name}");
-          setState(() {
-            _remoteUid = null;
-          });
+      RtcEngineEventHandler(onJoinChannelSuccess: (connection, int elapsed) {
+        setState(() {
+          _localUserJoined = true;
+        });
+      }, onUserJoined: (connection, int uid, int elapsed) {
+        print("elapsedonUserJoined : $elapsed");
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Remote user joined the call")));
+        setState(() {
+          _remoteUid = uid;
+        });
+      }, onUserOffline:
+          (connection, int uid, UserOfflineReasonType reasonType) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("$uid left")));
+        print("leave reason${reasonType.name}");
+        setState(() {
+          _remoteUid = null;
+        });
+        _engine.leaveChannel();
+      }, onConnectionLost: (connection) {
+        print("connection lost");
+      }, onLeaveChannel: (connection, stats) {
+        print("connectionduration : ${stats.duration}");
+        Navigator.of(context).pop();
+      }, onConnectionStateChanged: (RtcConnection connection,
+          ConnectionStateType stateType,
+          ConnectionChangedReasonType reasonType) {
+        print("onConnectionStateChanged");
+        print(stateType.name);
+        print(reasonType.name);
+        setState(() {
+          connectionState = stateType;
+        });
+        if (reasonType == ConnectionChangedReasonType.connectionChangedLost) {
           _engine.leaveChannel();
-        },
-        onConnectionLost: (connection) {
-          print("connection lost");
-        },
-        onLeaveChannel: (connection, stats) {
-          print("connectionduration : ${stats.duration}");
-          Navigator.of(context).pop();
-        },
-        onConnectionStateChanged: (RtcConnection connection,
-            ConnectionStateType stateType,
-            ConnectionChangedReasonType reasonType) {
-          print("onConnectionStateChanged");
-          print(stateType.name);
-          print(reasonType.name);
-          setState(() {
-            connectionState = stateType;
-          });
-          if (reasonType == ConnectionChangedReasonType.connectionChangedLost) {
-            _engine.leaveChannel();
-          }
-        },
-      ),
+        }
+      }, onNetworkQuality: (RtcConnection connection, int uid,
+          QualityType txQuality, QualityType rxQuality) {
+        print("onNetworkQuality");
+        print(uid);
+        print(txQuality.name);
+        print(rxQuality.name);
+        if (uid == 0) {
+          localQuality = txQuality;
+        } else {
+          remoteQuality = txQuality;
+        }
+        setState(() {});
+      }),
     );
 
     await _engine.joinChannel(
@@ -192,7 +201,8 @@ class _VideoScreenState extends State<VideoScreen> {
         ),
         if (connectionState ==
                 ConnectionStateType.connectionStateReconnecting ||
-            connectionState == ConnectionStateType.connectionStateConnecting)
+            connectionState == ConnectionStateType.connectionStateConnecting ||
+            remoteQuality == QualityType.qualityUnknown)
           const AppProgressIndicator(),
       ]);
     } else {
