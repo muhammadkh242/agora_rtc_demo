@@ -1,5 +1,7 @@
 import 'dart:developer';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+import 'package:agorastreaming/utils/call_state.dart';
+import 'package:agorastreaming/widgets/progress_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../config/agora_config.dart';
@@ -18,6 +20,8 @@ class _VideoScreenState extends State<VideoScreen> {
   bool frontCamera = true;
   bool localMuted = false;
   bool remoteMuted = false;
+  ConnectionStateType connectionState =
+      ConnectionStateType.connectionStateConnecting;
 
   @override
   void initState() {
@@ -39,24 +43,18 @@ class _VideoScreenState extends State<VideoScreen> {
       appId: appId,
       channelProfile: ChannelProfileType.channelProfileCommunication,
     ));
-
-    //await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
     await _engine.enableVideo();
-    await _engine.startPreview();
-
     _engine.registerEventHandler(
       RtcEngineEventHandler(
         onJoinChannelSuccess: (connection, int elapsed) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("onJoinChannelSuccess ${connection.localUid}")));
           setState(() {
             _localUserJoined = true;
           });
         },
         onUserJoined: (connection, int uid, int elapsed) {
           print("elapsedonUserJoined : $elapsed");
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("$uid joined")));
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text("Remote user joined the call")));
           setState(() {
             _remoteUid = uid;
           });
@@ -69,13 +67,24 @@ class _VideoScreenState extends State<VideoScreen> {
             _remoteUid = null;
           });
           _engine.leaveChannel();
-          Navigator.of(context).pop();
         },
         onConnectionLost: (connection) {
-          connection.localUid;
+          print("connection lost");
+          //_engine.leaveChannel();
         },
         onLeaveChannel: (connection, stats) {
           print("connectionduration : ${stats.duration}");
+          Navigator.of(context).pop();
+        },
+        onConnectionStateChanged: (RtcConnection connection,
+            ConnectionStateType stateType,
+            ConnectionChangedReasonType reasonType) {
+          print("onConnectionStateChanged");
+          print(stateType.name);
+          print(reasonType.name);
+          setState(() {
+            connectionState = stateType;
+          });
         },
       ),
     );
@@ -180,6 +189,10 @@ class _VideoScreenState extends State<VideoScreen> {
             child: _toolBar(),
           ),
         ),
+        if (connectionState ==
+                ConnectionStateType.connectionStateReconnecting ||
+            connectionState == ConnectionStateType.connectionStateConnecting)
+          const AppProgressIndicator(),
       ]);
     } else {
       return const Text(
@@ -197,7 +210,7 @@ class _VideoScreenState extends State<VideoScreen> {
         width: 100,
         height: 150,
         child: Center(
-          child: _localUserJoined
+          child: (_localUserJoined)
               ? AgoraVideoView(
                   controller: VideoViewController(
                     rtcEngine: _engine,
