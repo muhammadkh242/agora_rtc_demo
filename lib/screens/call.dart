@@ -96,7 +96,6 @@ class _CallScreenState extends State<CallScreen> {
           });
           if (reasonType == ConnectionChangedReasonType.connectionChangedLost) {
             _engine.leaveChannel();
-            _engine.release();
           }
         },
         onNetworkQuality: (RtcConnection connection, int uid,
@@ -282,7 +281,7 @@ class _CallScreenState extends State<CallScreen> {
           const Center(
               child: Text(
             "Trying to reconnect...",
-            style: TextStyle(fontSize: 16),
+            style: TextStyle(fontSize: 18),
           )),
       ]);
     } else {
