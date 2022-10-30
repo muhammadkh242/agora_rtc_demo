@@ -233,6 +233,7 @@ class _CallScreenState extends State<CallScreen> {
       return const Text(
         'Please wait for remote user to join',
         textAlign: TextAlign.center,
+        style: TextStyle(color: Colors.white, fontSize: 16),
       );
     }
   }

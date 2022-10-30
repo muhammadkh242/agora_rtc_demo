@@ -10,16 +10,16 @@ class DurationDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+      backgroundColor: Colors.white,
       content: Container(
         height: 100,
         width: 300,
+        decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+        ),
         padding: const EdgeInsets.symmetric(
           vertical: 12,
           horizontal: 32,
-        ),
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(32)),
-          color: Colors.white.withOpacity(0.3),
         ),
         child: Center(
           child: duration < 60
