@@ -36,7 +36,8 @@ class _CallScreenState extends State<CallScreen> {
 
   @override
   void dispose() {
-    _engine.leaveChannel();
+    //_engine.leaveChannel();
+    _engine.release(sync: true);
     super.dispose();
   }
 
@@ -95,6 +96,7 @@ class _CallScreenState extends State<CallScreen> {
           });
           if (reasonType == ConnectionChangedReasonType.connectionChangedLost) {
             _engine.leaveChannel();
+            _engine.release();
           }
         },
         onNetworkQuality: (RtcConnection connection, int uid,
@@ -130,7 +132,9 @@ class _CallScreenState extends State<CallScreen> {
               remoteVideoEnabled = true;
             }
           });
-
+        },
+        onRejoinChannelSuccess: (RtcConnection connection, int elapsed) {
+          print("onRejoinChannelSuccess");
         },
       ),
     );
@@ -194,7 +198,6 @@ class _CallScreenState extends State<CallScreen> {
               frontCamera = !frontCamera;
             });
             _engine.switchCamera();
-            _engine.enableLocalVideo(false);
           },
         ),
         const SizedBox(
